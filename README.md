@@ -12,3 +12,5 @@
 ![2.gif](https://i.loli.net/2019/08/07/BfMXpnGFNgyjasK.gif)
 ### 固定大小移动功能：
 ![3.gif](https://i.loli.net/2019/08/07/2ZIxHQt8aidsKPw.gif)
+### 代码地址
+[github](https://github.com/chengyangkj/VideoRoi)
