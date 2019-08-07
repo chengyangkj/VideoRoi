@@ -23,20 +23,62 @@ Widget::Widget(QWidget *parent) :
     //连接相关槽函数
     connect(ui->path_btn,SIGNAL(clicked(bool)),
             this,SLOT(open_path_slot()));
+    connect(ui->lineEdit_size_h,SIGNAL(textChanged(QString)),
+            this,SLOT(PointTextChangeSlot(QString)));
+    connect(ui->lineEdit_size_w,SIGNAL(textChanged(QString)),
+            this,SLOT(PointTextChangeSlot(QString)));
+    connect(ui->lineEdit_start_x,SIGNAL(textChanged(QString)),
+            this,SLOT(PointTextChangeSlot(QString)));
+    connect(ui->lineEdit_start_y,SIGNAL(textChanged(QString)),
+            this,SLOT(PointTextChangeSlot(QString)));
 
 }
+void Widget::PointTextChangeSlot(QString){
+
+    //根据输入框的大小变化 在label上绘制长方形
+     if(capture!=NULL){
+    double Start_x = ui->lineEdit_start_x->text().toInt();
+    double Start_y = ui->lineEdit_start_y->text().toInt();
+    double ROI_w = ui->lineEdit_size_w->text().toInt();
+    double ROI_h = ui->lineEdit_size_h->text().toInt();
+    double label_size_w = label_img->size().width();
+    double label_size_h = label_img->size().height();
+    double img_w = capture->get(3);
+    double img_h = capture->get(4);
+    double Stop_x = Start_x+ROI_w;
+    double Stop_y = Start_y+ROI_h;
+    //计算出在窗体上变化后的坐标  (因为图片显示在label上大小变化了)
+    int label_start_x = (Start_x/img_w)*label_size_w;
+    int label_start_y = (Start_y/img_h)*label_size_h;
+
+    int label_stop_x = (Stop_x/img_w)*label_size_w;
+    int label_stop_y = (Stop_y/img_h)*label_size_h;
+
+    //调用label的绘制函数
+    label_img->PaintRect(QPoint(label_start_x,label_start_y),
+                        QPoint(label_stop_x,label_stop_y) );
+     }
+     else{
+         QMessageBox::critical(NULL, "错误!", "请先打开视频!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+         return;
+     }
+
+
+}
+
 void Widget::StartPointSlot(QPoint p){
     StartPoint = p;
     //获取开始坐标槽函数
     //qDebug()<<p;
     if(capture!=NULL){
-        //计算比例 得出原图的坐标
+
         double label_size_w = label_img->size().width();
         double label_size_h = label_img->size().height();
         double img_w = capture->get(3);
         double img_h = capture->get(4);
         double point_x = p.x();
         double point_y = p.y();
+        //计算比例 得出原图的坐标  (因为图片显示在label上大小变化了)
         int ROI_x = (point_x/label_size_w)*img_w;
         int ROI_y = (point_y/label_size_h)*img_h;
 
@@ -53,7 +95,6 @@ void Widget::StopPointSlot(QPoint p){
     //获取结束坐标槽函数
     //qDebug()<<p;
     if(capture!=NULL){
-        //计算比例 得出原图ROI的宽高
         double label_size_w = label_img->size().width();
         double label_size_h = label_img->size().height();
         double img_w = capture->get(3);
@@ -62,6 +103,7 @@ void Widget::StopPointSlot(QPoint p){
         double point_End_y = p.y();
         double point_Start_x = StartPoint.x();
         double point_Start_y = StartPoint.y();
+          //计算比例 得出原图ROI的宽高 (因为图片显示在label上大小变化了)
         int ROI_w = ((point_End_x-point_Start_x)/label_size_w)*img_w;
         int ROI_h = ((point_End_y-point_Start_y)/label_size_h)*img_h;
 

@@ -24,6 +24,7 @@ private slots:
     void open_path_slot();
     void StartPointSlot(QPoint p);
     void StopPointSlot(QPoint p);
+    void PointTextChangeSlot(QString);
 private:
     Ui::Widget *ui;
     void show_img(Mat image,QLabel *label);

@@ -12,7 +12,12 @@
 class MyLabel : public QLabel
 {
      Q_OBJECT
+/*
+ * 类名:mylabel
+ * 功能:重写QLabel,实现在label上画框
+ * 
 
+*/
 
 
 public:

@@ -7,6 +7,12 @@ MyLabel::MyLabel(QWidget *parent):QLabel (parent)
         this->lineColor = QColor(Qt::red);
         this->lineSize = 1;
 }
+void MyLabel::PaintRect(QPoint start,QPoint stop){
+    //外部类绘制的函数
+    StartPoint=start;
+    EndPoint=stop;
+    update();  //更新label显示 调用paintEvent事件
+}
 
 //绘制事件
 void MyLabel::paintEvent(QPaintEvent *event)
@@ -27,7 +33,7 @@ void MyLabel::mousePressEvent(QMouseEvent *e)
     EndPoint = e->pos();
     //设置按下flag为true
     isPressed = true;
-    //发送开始位置坐标信号
+    //发送开始位置坐标信号给主窗体
     emit StartPointSignal(StartPoint);
 //    qDebug()<<"开始"<<StartPoint;
 }
@@ -39,9 +45,9 @@ void MyLabel::mouseMoveEvent(QMouseEvent *e)
     {
       //获得结束点的坐标
       EndPoint=e->pos();
-      //发送结束位置坐标信号
+      //发送结束位置坐标信号给主窗体
       emit StopPointSignal(EndPoint);
-      update();  //更新label显示
+      update();  //更新label显示 调用paintEvent事件
 //        qDebug()<<"按下移动"<<EndPoint;
     }
 
